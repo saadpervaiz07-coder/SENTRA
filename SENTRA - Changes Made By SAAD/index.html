@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENTRA — AI CCTV Investigation Support System</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+</head>
+
+<body data-page="dashboard">
+
+    <div class="app-shell">
+
+        <!-- ===================== SHARED TOPBAR ===================== -->
+        <header class="global-topbar" id="global-topbar-slot">
+            <!-- injected by layout.js -->
+        </header>
+
+        <div class="app-body">
+
+            <!-- ===================== SHARED SIDEBAR ===================== -->
+            <aside class="sidebar" id="sidebar-slot">
+                <!-- injected by layout.js -->
+            </aside>
+
+            <!-- ===================== MAIN CONTENT ===================== -->
+            <main class="main-content">
+
+                <!-- ======================================================
+                     PAGE: DASHBOARD
+                     ====================================================== -->
+                <section class="page-section" data-page="dashboard">
+
+                    <div class="flex justify-between items-center page-heading-row">
+                        <div>
+                            <h1 class="page-title">Investigation Dashboard</h1>
+                            <p class="page-subtitle">System Overview &amp; Recent Activity</p>
+                        </div>
+                        <div class="datetime">
+                            <span id="currentDate">Apr 27, 2025</span>
+                            <span id="currentTime">05:24 PM</span>
+                        </div>
+                    </div>
+
+                    <section class="stats-grid">
+                        <div class="card stat-card">
+                            <div class="stat-icon icon-blue"><i class="fa-solid fa-video"></i></div>
+                            <div>
+                                <p class="card-label">Total CCTV Events</p>
+                                <h2 class="card-value">248 <span class="card-trend up">↑ 12%</span></h2>
+                                <p class="stat-sub">Since last 7 days</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div>
+                                <p class="card-label">Potentially Relevant</p>
+                                <h2 class="card-value">37 <span class="card-trend up">↑ 18%</span></h2>
+                                <p class="stat-sub">Needs Review</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon icon-red"><i class="fa-solid fa-bell"></i></div>
+                            <div>
+                                <p class="card-label">Active Alerts</p>
+                                <h2 class="card-value">12 <span class="card-trend up">↑ 5%</span></h2>
+                                <p class="stat-sub">Last 24 hours</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon icon-blue"><i class="fa-solid fa-circle-play"></i></div>
+                            <div>
+                                <p class="card-label">Videos Analyzed</p>
+                                <h2 class="card-value">86 <span class="card-trend up">↑ 20%</span></h2>
+                                <p class="stat-sub">Last 7 days</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon icon-blue"><i class="fa-solid fa-briefcase"></i></div>
+                            <div>
+                                <p class="card-label">Investigations</p>
+                                <h2 class="card-value">9 <span class="card-trend up">↑ 3%</span></h2>
+                                <p class="stat-sub">Ongoing</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="overview-grid">
+
+                        <div class="card panel chart-panel">
+                            <h3 class="panel-title">Event Activity (Last 7 Days)</h3>
+                            <div class="chart-legend">
+                                <span><span class="dot dot-blue"></span> Total Events</span>
+                                <span><span class="dot dot-green"></span> Relevant Events</span>
+                            </div>
+                            <div class="bar-chart" id="barChart"></div>
+                        </div>
+
+                        <div class="card panel recent-events-panel">
+                            <h3 class="panel-title">Recent Events</h3>
+                            <table class="recent-events-table">
+                                <thead>
+                                    <tr><th>Time</th><th>Event Name</th><th>Camera</th><th>Status</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>01:13:18 AM</td><td>Suspicious Vehicle Activity</td><td>Camera 01</td><td><span class="badge badge-red">Critical</span></td></tr>
+                                    <tr><td>00:31:05 PM</td><td>Person in Restricted Area</td><td>Camera 03</td><td><span class="badge badge-orange">Open</span></td></tr>
+                                    <tr><td>01:12:16 AM</td><td>Vehicle Loitering</td><td>Camera 02</td><td><span class="badge badge-green">Completed</span></td></tr>
+                                    <tr><td>12:05:34 AM</td><td>Multiple People Gathering</td><td>Camera 04</td><td><span class="badge badge-green">Completed</span></td></tr>
+                                    <tr><td>11:48:21 PM</td><td>Night Activity</td><td>Camera 01</td><td><span class="badge badge-orange">Open</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card panel cctv-feed-panel">
+                            <h3 class="panel-title">Latest CCTV Feed</h3>
+                            <div class="feed-thumb">
+                                <video id="cctvVideo" autoplay muted>
+                                    <source src="assets/cctv_main_gate.mp4" type="video/mp4">
+                                </video>
+                                <span class="feed-timestamp">2025-04-27 02:43:18</span>
+                                <span class="bbox bbox-green"  style="top:38%; left:14%; width:22%; height:46%;"><span class="bbox-label bbox-label-green">Person #17</span></span>
+                                <span class="bbox bbox-blue"   style="top:52%; left:38%; width:26%; height:32%;"><span class="bbox-label bbox-label-blue">Motorcycle #04</span></span>
+                                <span class="bbox bbox-purple" style="top:34%; left:66%; width:28%; height:40%;"><span class="bbox-label bbox-label-purple">Car #02</span></span>
+
+                                <div class="feed-controls">
+                                    <button type="button" class="feed-control-btn" id="feedPlayBtn"><i class="fa-solid fa-play"></i></button>
+                                    <span class="feed-time">02:43:18 / 02:48:21</span>
+                                    <div class="feed-progress"><div class="feed-progress-fill"></div></div>
+                                    <span class="feed-control-icon"><i class="fa-solid fa-volume-high feed-control-icon"></i></span>
+                                    <span class="feed-control-icon">1x</span>
+                                    <span class="feed-control-icon"><i class="fa-solid fa-expand"></i></span>
+                                </div>
+                            </div>
+                            <p class="feed-caption">Camera 01 — Main Gate</p>
+                        </div>
+
+                        <div class="card panel quick-actions-panel">
+                            <h3 class="panel-title">Quick Actions</h3>
+                            <div class="quick-actions">
+                                <button type="button" class="btn quick-action-btn" data-navigate="cctv-events">
+                                    <span class="quick-action-icon"><i class="fa-solid fa-eye"></i></span>
+                                    <span>View All Events</span>
+                                </button>
+                                <button type="button" class="btn quick-action-btn" data-navigate="video-search">
+                                    <span class="quick-action-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                    <span>Search Events</span>
+                                </button>
+                                <button type="button" class="btn quick-action-btn" data-navigate="reports">
+                                    <span class="quick-action-icon"><i class="fa-solid fa-download"></i></span>
+                                    <span>Export Report</span>
+                                </button>
+                                <button type="button" class="btn quick-action-btn" data-navigate="settings">
+                                    <span class="quick-action-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                                    <span>Manage Rules</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </section>
+                </section>
+
+
+                <!-- ======================================================
+                     PAGE: INVESTIGATIONS
+                     ====================================================== -->
+                <section class="page-section hidden" data-page="investigations">
+
+                    <div class="flex justify-between items-center page-heading-row">
+                        <div>
+                            <h1 class="page-title">Investigations</h1>
+                            <p class="page-subtitle">Search, review and manage investigation cases</p>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="newInvestigationBtn">
+                            <i class="fa-solid fa-plus"></i>
+                            New Investigation
+                        </button>
+                    </div>
+
+                    <section class="card panel filters-panel">
+                        <div class="search-row">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Search by ID, event name, camera, or date..." id="mainSearch" />
+                        </div>
+
+                        <div class="filters-row">
+                            <div class="filter-field">
+                                <label for="dateRange">Date Range</label>
+                                <div class="select-wrapper date-wrapper">
+                                    <i class="fa-regular fa-calendar date-calendar-icon"></i>
+                                    <input type="date" id="dateRange" value="2025-04-27" />
+                                    <span class="date-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+                                </div>
+                            </div>
+
+                            <div class="filter-field">
+                                <label for="eventType">Event Type</label>
+                                <div class="select-wrapper">
+                                    <i class="fa-solid fa-tag"></i>
+                                    <select id="eventType">
+                                        <option>All Types</option>
+                                        <option>Vehicle Loitering</option>
+                                        <option>Person–Vehicle Interaction</option>
+                                        <option>Night Activity</option>
+                                        <option>Restricted Area</option>
+                                        <option>Multiple People Gathering</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="filter-field">
+                                <label for="statusFilter">Status</label>
+                                <div class="select-wrapper">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <select id="statusFilter">
+                                        <option>All Status</option>
+                                        <option>In Progress</option>
+                                        <option>Open</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="filter-actions">
+                                <button type="button" class="btn btn-secondary" id="resetBtn">Reset</button>
+                                <button type="button" class="btn btn-primary" id="searchBtn">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card panel">
+                        <table class="investigations-table" id="investigationsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th><th>Event Name</th><th>Date &amp; Time</th>
+                                    <th>Camera</th><th>Status</th><th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>INV-001</td><td>Suspicious Vehicle Activity</td><td>04:33:18 PM</td><td>Camera 01</td>
+                                    <td><span class="badge badge-red"><i class="fa-solid fa-triangle-exclamation"></i> In Progress</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>INV-002</td><td>Person in Restricted Area</td><td>03:21:05 PM</td><td>Camera 03</td>
+                                    <td><span class="badge badge-orange"><i class="fa-solid fa-clock"></i> Open</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>INV-003</td><td>Vehicle Loitering</td><td>01:12:16 AM</td><td>Camera 02</td>
+                                    <td><span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Completed</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>INV-004</td><td>Multiple People Gathering</td><td>12:05:34 AM</td><td>Camera 04</td>
+                                    <td><span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Completed</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>INV-005</td><td>Night Activity</td><td>11:48:21 PM</td><td>Camera 01</td>
+                                    <td><span class="badge badge-orange"><i class="fa-solid fa-clock"></i> Open</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </section>
+
+
+                <!-- ======================================================
+                     PAGE: CCTV EVENTS
+                     ====================================================== -->
+                <section class="page-section hidden" data-page="cctv-events">
+
+                    <h1 class="page-title">CCTV Events</h1>
+                    <p class="page-subtitle">View all detected events from CCTV footage</p>
+
+                    <section class="card panel filters-panel">
+                        <div class="filters-row">
+                            <div class="filter-field">
+                                <label for="dateRangeCctv">Date Range</label>
+                                <div class="cctv-input-icon">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <input type="date" id="dateRangeCctv" value="2025-04-27" />
+                                </div>
+                            </div>
+
+                            <div class="filter-field filter-field-time">
+                                <label for="timeRange">Time Range</label>
+                                <div class="time-range-box">
+                                    <i class="fa-regular fa-clock time-range-icon"></i>
+                                    <input type="time" id="timeFrom" class="time-native" value="00:00">
+                                    <span class="time-range-sep">-</span>
+                                    <input type="time" id="timeTo" class="time-native" value="23:59">
+                                    <i class="fa-solid fa-chevron-down time-range-arrow"></i>
+                                </div>
+                            </div>
+
+                            <div class="filter-field">
+                                <label for="eventTypeFilter">Event Type</label>
+                                <div class="cctv-select-icon">
+                                    <i class="fa-solid fa-tag"></i>
+                                    <select id="eventTypeFilter">
+                                        <option>All Types</option>
+                                        <option>Vehicle Loitering</option>
+                                        <option>Person–Vehicle Interaction</option>
+                                        <option>Night Activity</option>
+                                        <option>Restricted Area</option>
+                                        <option>Multiple People Gathering</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="filter-field">
+                                <label for="cameraFilter">Camera</label>
+                                <div class="cctv-select-icon">
+                                    <i class="fa-solid fa-video"></i>
+                                    <select id="cameraFilter">
+                                        <option>All Cameras</option>
+                                        <option>Camera 01</option>
+                                        <option>Camera 02</option>
+                                        <option>Camera 03</option>
+                                        <option>Camera 04</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="filter-field">
+                                <label for="cctvStatusFilter">Status</label>
+                                <div class="cctv-select-icon">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <select id="cctvStatusFilter">
+                                        <option>All Status</option>
+                                        <option>Active</option>
+                                        <option>Open</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="filter-actions">
+                                <button type="button" class="btn btn-primary" id="applyFiltersBtn">
+                                    <i class="fa-solid fa-filter"></i>
+                                    Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card panel">
+                        <table class="events-table" id="eventsTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th><th>Event Name</th><th>Start Time</th><th>End Time</th>
+                                    <th>Camera</th><th>Person ID</th><th>Vehicle ID</th>
+                                    <th>Status</th><th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td><td>Suspicious Vehicle Activity</td><td>04:33:18 PM</td><td>04:33:46 PM</td>
+                                    <td>Camera 01</td><td>17</td><td>04</td>
+                                    <td><span class="badge badge-red"><i class="fa-solid fa-triangle-exclamation"></i> Active</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td><td>Person in Restricted Area</td><td>03:21:05 PM</td><td>03:23:17 PM</td>
+                                    <td>Camera 03</td><td>12</td><td>-</td>
+                                    <td><span class="badge badge-orange"><i class="fa-solid fa-clock"></i> Open</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td><td>Vehicle Loitering</td><td>01:12:16 AM</td><td>01:18:03 AM</td>
+                                    <td>Camera 02</td><td>07</td><td>-</td>
+                                    <td><span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Completed</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td><td>Multiple People Gathering</td><td>12:05:34 AM</td><td>12:07:21 AM</td>
+                                    <td>Camera 04</td><td>21, 22, 23</td><td>-</td>
+                                    <td><span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Completed</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>5</td><td>Night Activity</td><td>11:48:21 PM</td><td>11:52:08 PM</td>
+                                    <td>Camera 01</td><td>08</td><td>-</td>
+                                    <td><span class="badge badge-orange"><i class="fa-solid fa-clock"></i> Open</span></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </section>
+
+
+                <!-- ======================================================
+                     PAGE: ALERTS
+                     ====================================================== -->
+                <section class="page-section hidden" data-page="alerts">
+
+                    <section class="page-container">
+                        <div class="page-header">
+                            <h1 class="page-title">Alerts</h1>
+                            <p class="page-subtitle">Rule-triggered events and important notifications</p>
+                        </div>
+
+                        <div class="filter-card">
+                            <div class="filter-group">
+                                <label for="severity-filter">Severity</label>
+                                <select id="severity-filter" class="form-select">
+                                    <option value="ALL">All Severity</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="status-filter">Status</label>
+                                <select id="status-filter" class="form-select">
+                                    <option value="ALL">All Status</option>
+                                    <option value="Open">Open</option>
+                                    <option value="Resolved">Resolved</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="date-filter">Date</label>
+                                <input type="date" id="date-filter" class="form-input" value="2025-04-27">
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="time-filter">Time</label>
+                                <input type="time" id="time-filter" class="form-input">
+                            </div>
+
+                            <div class="filter-actions">
+                                <button type="button" id="btn-apply-filters" class="btn btn-primary">Apply</button>
+                                <button type="button" id="btn-reset-filters" class="btn btn-secondary">Reset</button>
+                            </div>
+                        </div>
+
+                        <div class="table-card">
+                            <table class="alerts-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th><th>Time</th><th>Event Name</th>
+                                        <th>Severity</th><th>Status</th><th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alerts-table-body"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Alert details modal (uses the shared modal-overlay style) -->
+                    <div class="modal-overlay" id="alert-modal">
+                        <div class="modal-card">
+                            <div class="modal-header">
+                                <h3 id="modal-title">Alert Details</h3>
+                                <button type="button" class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
+                            </div>
+                            <div class="modal-body" id="modal-body-content"></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="modal-resolve-btn">Toggle Status</button>
+                                <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================
+                     PAGE: VIDEO SEARCH
+                     ====================================================== -->
+                <section class="page-section hidden" data-page="video-search">
+
+                    <section class="page-container">
+                        <div class="page-header">
+                            <h1 class="page-title">Video Search</h1>
+                            <p class="page-subtitle">Find specific footage by time, camera or object</p>
+                        </div>
+
+                        <div class="filter-card">
+                            <div class="filter-group">
+                                <label for="search-date">Date</label>
+                                <input type="date" id="search-date" class="form-input" value="2025-04-27">
+                            </div>
+
+                            <div class="filter-group">
+                                <label>Time Range</label>
+                                <div class="time-range-inline">
+                                    <input type="time" id="search-time-from" class="form-input" value="00:00">
+                                    <span class="time-range-dash">-</span>
+                                    <input type="time" id="search-time-to" class="form-input" value="23:59">
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="search-camera">Camera</label>
+                                <select id="search-camera" class="form-select">
+                                    <option value="ALL">All Cameras</option>
+                                    <option value="Camera 01">Camera 01</option>
+                                    <option value="Camera 02">Camera 02</option>
+                                    <option value="Camera 03">Camera 03</option>
+                                    <option value="Camera 04">Camera 04</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="search-object">Object</label>
+                                <select id="search-object" class="form-select">
+                                    <option value="ALL">Person / Vehicle / Motorcycle</option>
+                                    <option value="Person">Person</option>
+                                    <option value="Vehicle">Vehicle</option>
+                                    <option value="Motorcycle">Motorcycle</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-actions">
+                                <button type="button" id="btn-video-search" class="btn btn-primary">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="search-layout">
+                            <div class="results-panel">
+                                <div class="results-header">
+                                    <h3 id="results-count-title">Search Results (12)</h3>
+                                </div>
+                                <div class="results-list" id="results-list-container"></div>
+                            </div>
+
+                            <div class="player-panel">
+                                <div class="player-header">
+                                    <span id="player-timestamp" class="timestamp-label">2025-04-27 04:18:19</span>
+                                    <div class="player-actions">
+                                        <i class="fa-solid fa-expand icon-btn"></i>
+                                    </div>
+                                </div>
+
+                                <div class="video-display">
+                                    <div class="cctv-placeholder">
+                                        <i class="fa-solid fa-video cctv-bg-icon"></i>
+                                        <span id="camera-title-overlay" class="cctv-overlay-text">Camera 01 - Live CCTV Feed</span>
+                                    </div>
+                                    <div class="box-overlay person-box"><span class="box-tag green-tag">Person #1</span></div>
+                                    <div class="box-overlay motorcycle-box"><span class="box-tag blue-tag">Motorcycle #24</span></div>
+                                    <div class="box-overlay car-box"><span class="box-tag purple-tag">Car #12</span></div>
+                                </div>
+
+                                <div class="player-controls">
+                                    <button type="button" id="btn-play-pause" class="control-btn"><i class="fa-solid fa-play"></i></button>
+                                    <button type="button" class="control-btn"><i class="fa-solid fa-pause"></i></button>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar-fill" id="progress-fill" style="width: 43%;"></div>
+                                    </div>
+                                    <span class="time-display" id="time-display-label">04:18 / 10:00</span>
+                                    <button type="button" class="control-btn"><i class="fa-solid fa-volume-high"></i></button>
+                                    <button type="button" class="control-btn"><i class="fa-solid fa-download"></i></button>
+                                    <button type="button" class="control-btn"><i class="fa-solid fa-expand"></i></button>
+                                </div>
+
+                                <div class="jump-time-card">
+                                    <label for="jump-time-input">Jump to Time:</label>
+                                    <input type="text" id="jump-time-input" class="form-input jump-input" value="04:18:19">
+                                    <button type="button" id="btn-jump-go" class="btn btn-primary">Go</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+
+                <!-- ======================================================
+                     PAGE: EVENT TIMELINE
+                     ====================================================== -->
+                <section class="page-section hidden" data-page="event-timeline">
+
+                    <div class="page-header-block">
+                        <h1 class="page-title">Event Timeline</h1>
+                        <p class="page-subtitle">Chronological view of all detected events</p>
+                    </div>
+
+                    <div class="timeline-filters-row">
+                        <input type="date" class="filter-select" id="timeline-date" value="2025-04-27">
+                        <select class="filter-select">
+                            <option>All Cameras</option>
+                            <option>Camera 01</option>
+                            <option>Camera 02</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>All Event Types</option>
+                            <option>Person Detected</option>
+                            <option>Vehicle Approach</option>
+                        </select>
+                    </div>
+
+                    <div class="timeline-main-grid">
+                        <div class="card timeline-card">
+                            <div class="timeline-container">
+                                <div class="timeline-line"></div>
+
+                                <div class="timeline-item active-timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-time">04:33:18</div>
+                                    <div class="timeline-desc">Person detected near motorcycle</div>
+                                    <div class="timeline-cam">Camera 01</div>
+                                    <div class="timeline-tag badge-blue">[Person #77]</div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-time">04:32:07</div>
+                                    <div class="timeline-desc">Motorcycle approaches</div>
+                                    <div class="timeline-cam">Camera 01</div>
+                                    <div class="timeline-tag badge-purple">[Vehicle #94]</div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-time">04:30:18</div>
+                                    <div class="timeline-desc">Person-vehicle interaction</div>
+                                    <div class="timeline-cam">Camera 01</div>
+                                    <div class="timeline-tag badge-orange">[Rule Triggered]</div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-time">04:28:46</div>
+                                    <div class="timeline-desc">Interaction ends</div>
+                                    <div class="timeline-cam">Camera 01</div>
+                                    <div class="timeline-tag"></div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-time">04:35:02</div>
+                                    <div class="timeline-desc">Motorcycle leaves</div>
+                                    <div class="timeline-cam">Camera 01</div>
+                                    <div class="timeline-tag"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-sidebar-col">
+                            <div class="card preview-card">
+                                <div class="preview-header">
+                                    <span>Camera 01</span>
+                                    <span class="rec-indicator"><span class="rec-dot"></span> REC</span>
+                                </div>
+                                <div class="preview-screen">
+                                    <div class="bounding-box person-box"><span class="box-tag">Person #77</span></div>
+                                    <div class="bounding-box moto-box"><span class="box-tag">Motorcycle #94</span></div>
+                                    <div class="preview-timestamp">04:30:18</div>
+                                    <div class="preview-cam-label">Camera 01</div>
+                                </div>
+                            </div>
+
+                            <div class="card related-event-card">
+                                <h3 class="panel-title" style="margin-bottom: 8px;">Related Event</h3>
+                                <div class="related-title">Potentially Suspicious Vehicle Activity</div>
+                                <div class="related-info-row">
+                                    <span class="text-muted">04:33:18 - 04:13:46</span>
+                                    <span class="badge badge-red">High</span>
+                                </div>
+                                <div class="related-metadata text-secondary">Person #77 / Motorcycle #94</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================
+                     PAGE: REPORTS
+                     ====================================================== -->
+                <section class="page-section hidden" data-page="reports">
+
+                    <div class="topbar">
+                        <div>
+                            <h1 class="page-title" style="margin-top:0;">Reports</h1>
+                            <p class="page-subtitle" style="margin-bottom:0;">Generate and export investigation reports</p>
+                        </div>
+                        <div class="topbar-right">
+                            <button type="button" class="btn btn-primary" id="generate-report-btn">
+                                <i class="fa-solid fa-file-circle-plus"></i>
+                                Generate Report
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card reports-card">
+                        <div class="reports-tabs" id="reports-tabs">
+                            <button type="button" class="tab-btn active" data-filter="all">All Reports</button>
+                            <button type="button" class="tab-btn" data-filter="event">Event Reports</button>
+                            <button type="button" class="tab-btn" data-filter="investigation">Investigation Reports</button>
+                        </div>
+
+                        <div class="reports-table-wrap">
+                            <table id="reports-table">
+                                <thead>
+                                    <tr><th>Report Name</th><th>Type</th><th>Date Created</th><th>Actions</th></tr>
+                                </thead>
+                                <tbody id="reports-table-body"></tbody>
+                            </table>
+                            <p class="reports-empty hidden" id="reports-empty">No reports found for this filter.</p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================
+                     PAGE: SETTINGS
+                     ====================================================== -->
+                <section class="page-section hidden" data-page="settings">
+
+                    <div class="topbar">
+                        <div>
+                            <h1 class="page-title" style="margin-top:0;">Settings</h1>
+                            <p class="page-subtitle" style="margin-bottom:0;">Configure system preferences and rules</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-tabs" id="settings-tabs">
+                        <button type="button" class="tab-btn active" data-panel="general">General</button>
+                        <button type="button" class="tab-btn" data-panel="rules">Rules</button>
+                        <button type="button" class="tab-btn" data-panel="cameras">Cameras</button>
+                        <button type="button" class="tab-btn" data-panel="database">Database</button>
+                        <button type="button" class="tab-btn" data-panel="users">Users</button>
+                    </div>
+
+                    <div class="settings-panel" id="panel-general">
+                        <div class="settings-grid">
+                            <div class="card">
+                                <p class="panel-title">System Settings</p>
+                                <div class="field">
+                                    <label for="system-name">System Name</label>
+                                    <input type="text" id="system-name" value="SENTRA">
+                                </div>
+                                <div class="field">
+                                    <label for="timezone">Timezone</label>
+                                    <select id="timezone">
+                                        <option value="Asia/Karachi" selected>Asia/Karachi (UTC+5)</option>
+                                        <option value="UTC">UTC (UTC+0)</option>
+                                        <option value="Asia/Dubai">Asia/Dubai (UTC+4)</option>
+                                        <option value="Asia/Kolkata">Asia/Kolkata (UTC+5:30)</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="retention-period">Retention Period</label>
+                                    <select id="retention-period">
+                                        <option value="7">7 days</option>
+                                        <option value="30" selected>30 days</option>
+                                        <option value="60">60 days</option>
+                                        <option value="90">90 days</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <p class="panel-title">Detection Settings</p>
+                                <div class="toggle-row">
+                                    <span>Enable Person Detection</span>
+                                    <label class="switch"><input type="checkbox" id="toggle-person" checked><span class="slider"></span></label>
+                                </div>
+                                <div class="toggle-row">
+                                    <span>Enable Vehicle Detection</span>
+                                    <label class="switch"><input type="checkbox" id="toggle-vehicle" checked><span class="slider"></span></label>
+                                </div>
+                                <div class="toggle-row">
+                                    <span>Enable Tracking</span>
+                                    <label class="switch"><input type="checkbox" id="toggle-tracking" checked><span class="slider"></span></label>
+                                </div>
+                                <div class="toggle-row">
+                                    <span>Enable Rule Engine</span>
+                                    <label class="switch"><input type="checkbox" id="toggle-rule-engine" checked><span class="slider"></span></label>
+                                </div>
+                                <div class="save-row">
+                                    <button type="button" class="btn btn-primary" id="save-settings-btn">
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                        Save Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-panel hidden" id="panel-rules">
+                        <div class="card"><p class="panel-title">Rules</p><p class="text-muted">Rule engine configuration goes here.</p></div>
+                    </div>
+                    <div class="settings-panel hidden" id="panel-cameras">
+                        <div class="card"><p class="panel-title">Cameras</p><p class="text-muted">Camera configuration goes here.</p></div>
+                    </div>
+                    <div class="settings-panel hidden" id="panel-database">
+                        <div class="card"><p class="panel-title">Database</p><p class="text-muted">Database configuration goes here.</p></div>
+                    </div>
+                    <div class="settings-panel hidden" id="panel-users">
+                        <div class="card"><p class="panel-title">Users</p><p class="text-muted">User management goes here.</p></div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         SCRIPTS — layout.js MUST be first (builds the shell + router)
+         ========================================================= -->
+    <script src="javascript/layout.js"></script>
+    <script src="javascript/dashboard.js"></script>
+    <script src="javascript/investigations.js"></script>
+    <script src="javascript/cctv-events.js"></script>
+    <script src="javascript/alerts.js"></script>
+    <script src="javascript/event-timeline.js"></script>
+    <script src="javascript/reports.js"></script>
+    <script src="javascript/settings.js"></script>
+    <script src="javascript/video-search.js"></script>
+
+    <!-- =========================================================
+         DEFENSIVE CLOSE-HANDLERS
+         These guarantee the alert modal closes even if alerts.js
+         hasn't wired its listeners yet (e.g. on slow load or error).
+         If alerts.js already bound the buttons, these are harmless.
+         ========================================================= -->
+    <script>
+        (function () {
+            "use strict";
+
+            function closeAlertModal() {
+                const modal = document.getElementById("alert-modal");
+                if (!modal) return;
+                modal.classList.remove("active");
+                modal.style.removeProperty("display");
+            }
+
+            document.addEventListener("click", function (e) {
+                // Close button (×) in header
+                if (e.target.closest("#modal-close-btn")) {
+                    e.preventDefault();
+                    closeAlertModal();
+                    return;
+                }
+                // Cancel/close button in footer
+                if (e.target.closest("#modal-cancel-btn")) {
+                    e.preventDefault();
+                    closeAlertModal();
+                    return;
+                }
+                // Click on the dark overlay (outside the modal card)
+                const overlay = e.target.closest("#alert-modal");
+                if (overlay && e.target === overlay) {
+                    closeAlertModal();
+                }
+            });
+
+            // Escape key
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") closeAlertModal();
+            });
+        })();
+    </script>
+
+</body>
+</html>
